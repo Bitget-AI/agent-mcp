@@ -1,0 +1,57 @@
+{
+  "name": "bitget-mcp-server",
+  "version": "1.2.0",
+  "description": "Official Bitget MCP Server — exposes 56+ Bitget API tools to any MCP-compatible AI host (Claude Desktop, Cursor, Continue, …)",
+  "type": "module",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "bitget-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "server.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "bitget",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "trading",
+    "crypto",
+    "ai-agent"
+  ],
+  "homepage": "https://github.com/bitget/agent-hub",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitget/agent-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bitget/agent-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "bitget-agent-sdk": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^2.0.0"
+  }
+}
