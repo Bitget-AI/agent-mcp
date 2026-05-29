@@ -1,6 +1,6 @@
-# bitget-mcp-server
+# bitget-agent-mcp
 
-[![npm](https://img.shields.io/npm/v/bitget-mcp-server.svg)](https://www.npmjs.com/package/bitget-mcp-server)
+[![npm](https://img.shields.io/npm/v/bitget-agent-mcp.svg)](https://www.npmjs.com/package/bitget-agent-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 The **MCP surface** of the [Bitget Agent Hub](https://github.com/bitget/agent-hub) — exposes 56+ Bitget API tools over the [Model Context Protocol](https://modelcontextprotocol.io) so any MCP-capable AI host (Claude Desktop, Cursor, Continue, …) can drive your Bitget account.
@@ -16,7 +16,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "bitget": {
       "command": "npx",
-      "args": ["-y", "bitget-mcp-server"],
+      "args": ["-y", "bitget-agent-mcp"],
       "env": {
         "BITGET_API_KEY": "...",
         "BITGET_SECRET_KEY": "...",
@@ -29,12 +29,12 @@ Add to your `claude_desktop_config.json`:
 
 ### Cursor / Continue / other MCP hosts
 
-Use the same `npx -y bitget-mcp-server` command — pass credentials via env vars.
+Use the same `npx -y bitget-agent-mcp` command — pass credentials via env vars.
 
 ## CLI options
 
 ```
-bitget-mcp-server [options]
+bitget-agent-mcp [options]
 
   --modules <list>     spot,futures,account,margin,copytrading,convert,earn,p2p,broker
                        (or "all"; default: spot,futures,account)
@@ -47,7 +47,7 @@ bitget-mcp-server [options]
 
 If your AI assistant speaks **MCP**, this is the right surface. The server runs locally over stdio, holds your credentials in env vars only, and never proxies traffic through Bitget infrastructure.
 
-If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenClaw), prefer [`bitget-client`](https://github.com/bitget/agent-cli) (`bgc`) — same tools, just shell-native.
+If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenClaw), prefer [`bitget-agent-cli`](https://github.com/bitget/agent-cli) (`bgc`) — same tools, just shell-native.
 
 ## License
 

@@ -9,7 +9,7 @@
   "transports": ["stdio"],
   "command": {
     "executable": "npx",
-    "args": ["-y", "bitget-mcp-server"]
+    "args": ["-y", "bitget-agent-mcp"]
   },
   "env": {
     "BITGET_API_KEY": {
