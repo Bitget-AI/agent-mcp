@@ -1,0 +1,78 @@
+{
+  "name": "@bitget-ai/bitget-agent-mcp",
+  "version": "1.2.0",
+  "description": "Official Bitget MCP Server — exposes 56+ Bitget API tools (spot, futures, margin, copy-trading, earn, broker, p2p, convert, account) to any MCP-compatible AI host (Claude Desktop, Cursor, Continue, …) over stdio.",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "bitget-agent-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "server.json",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm run typecheck && pnpm run build && pnpm run test"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "bitget",
+    "bitget-api",
+    "bitget-mcp",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "trading",
+    "crypto",
+    "cryptocurrency",
+    "exchange",
+    "spot",
+    "futures",
+    "margin",
+    "ai-agent",
+    "claude",
+    "claude-desktop",
+    "cursor",
+    "continue",
+    "anthropic"
+  ],
+  "homepage": "https://github.com/Bitget-AI/agent-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitget-AI/agent-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Bitget-AI/agent-mcp/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@bitget-ai/bitget-agent-sdk": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^2.0.0"
+  }
+}

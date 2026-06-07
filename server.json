@@ -1,0 +1,25 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/server.json",
+  "name": "bitget",
+  "displayName": "Bitget",
+  "description": "Official Bitget MCP server — 56+ Bitget API tools for spot, futures, account, margin, copy-trading, convert, earn, p2p, and broker.",
+  "version": "1.2.0",
+  "homepage": "https://github.com/Bitget-AI/agent-mcp",
+  "license": "MIT",
+  "transports": ["stdio"],
+  "command": {
+    "executable": "npx",
+    "args": ["-y", "bitget-agent-mcp"]
+  },
+  "env": {
+    "BITGET_API_KEY": {
+      "description": "Bitget API key (required for private endpoints)"
+    },
+    "BITGET_SECRET_KEY": {
+      "description": "Bitget API secret"
+    },
+    "BITGET_PASSPHRASE": {
+      "description": "Bitget API passphrase"
+    }
+  }
+}
