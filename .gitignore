@@ -1,5 +1,6 @@
 node_modules/
 dist/
+lib/
 .DS_Store
 .idea/
 .vscode/
@@ -7,3 +8,9 @@ dist/
 .env.*
 *.tgz
 *.log
+
+# npm publish — decrypted token files; must never be committed.
+.npmrc
+
+# User-local Claude settings
+.claude/
