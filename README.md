@@ -7,8 +7,6 @@
 
 The **MCP surface** of the [Bitget Agent Hub](https://github.com/Bitget-AI/agent-hub) — exposes **59 Bitget API tools** over the [Model Context Protocol](https://modelcontextprotocol.io) so Claude Desktop, Cursor, Continue, ChatGPT Desktop, Windsurf, or any other MCP-capable AI host can drive your Bitget account.
 
-> 🚧 **Pre-release.** First public release on the launch path to npm. The install commands below are the canonical names that will work the moment publishing lands. Track [Bitget-AI/agent-hub](https://github.com/Bitget-AI/agent-hub) for status.
-
 ```bash
 npx -y @bitget-ai/bitget-agent-mcp
 ```
