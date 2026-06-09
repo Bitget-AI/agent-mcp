@@ -15,7 +15,10 @@ DIST_DIR := dist
 build-bg-prod-data-prod-production-data-bitget-agent-mcp-external:
 	rm -rf $(DIST_DIR) lib
 	pnpm install --frozen-lockfile
+	pnpm run typecheck
 	pnpm run build
+	pnpm run test
+	npm pack --dry-run
 	mkdir -p $(DIST_DIR)
 	cp package.json README.md LICENSE CHANGELOG.md VERSION server.json $(DIST_DIR)/
 	cp -R lib $(DIST_DIR)/
@@ -43,7 +46,7 @@ start-bg-prod-data-prod-production-data-bitget-agent-mcp-external:
 		echo "ERROR: kms-run did not produce a non-empty .npmrc"; exit 1; \
 	fi; \
 	cp "$$publish_dir/kms/.npmrc" "$$publish_dir/.npmrc"; \
-	(cd "$$publish_dir" && npm publish --access public)
+	(cd "$$publish_dir" && npm publish --access public --ignore-scripts)
 
 healthcheck-bg-prod-data-prod-production-data-bitget-agent-mcp-external:
 	@echo "healthcheck-ok"
