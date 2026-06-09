@@ -5,7 +5,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A520-026e00?style=flat-square)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-The **MCP surface** of the [Bitget Agent Hub](https://github.com/Bitget-AI/agent-hub) — exposes **56+ Bitget API tools** over the [Model Context Protocol](https://modelcontextprotocol.io) so Claude Desktop, Cursor, Continue, ChatGPT Desktop, Windsurf, or any other MCP-capable AI host can drive your Bitget account.
+The **MCP surface** of the [Bitget Agent Hub](https://github.com/Bitget-AI/agent-hub) — exposes **59 Bitget API tools** over the [Model Context Protocol](https://modelcontextprotocol.io) so Claude Desktop, Cursor, Continue, ChatGPT Desktop, Windsurf, or any other MCP-capable AI host can drive your Bitget account.
 
 > 🚧 **Pre-release.** First public release on the launch path to npm. The install commands below are the canonical names that will work the moment publishing lands. Track [Bitget-AI/agent-hub](https://github.com/Bitget-AI/agent-hub) for status.
 
@@ -51,7 +51,7 @@ Settings → MCP → add a new server:
 | Args | `-y @bitget-ai/bitget-agent-mcp` |
 | Env | `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` |
 
-> Cursor caps total MCP tools at 40. The default profile (35 tools) fits with 5 slots free for your other servers.
+> Cursor caps total MCP tools at 40. The default profile (36 tools) fits with 4 slots free for your other servers.
 
 ### Continue / Windsurf / ChatGPT Desktop / other MCP hosts
 
@@ -79,7 +79,7 @@ bitget-agent-mcp [options]
   --modules <list>     spot,futures,account,margin,copytrading,
                        convert,earn,p2p,broker
                        Special: "all" loads everything.
-                       Default: spot,futures,account (35 tools).
+                       Default: spot,futures,account (36 tools).
 
   --read-only          Strip every write tool at load time. The AI
                        will not see place_order / transfer / withdraw
@@ -110,7 +110,7 @@ If your AI assistant speaks **MCP**, this is the right surface for Bitget:
 - Credentials live in your host's MCP config, never on Bitget's infrastructure.
 - One process per AI session — clean shutdown, no orphaned daemons.
 
-If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenClaw), prefer [`@bitget-ai/bitget-agent-cli`](https://github.com/Bitget-AI/agent-cli) (`bgc`) — same 56+ tools, shell-native.
+If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenClaw), prefer [`@bitget-ai/bitget-agent-cli`](https://github.com/Bitget-AI/agent-cli) (`bgc`) — same 59 tools, shell-native.
 
 ---
 
@@ -119,7 +119,7 @@ If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenC
 | Module | Tools | Loaded by default | Requires API key |
 |---|:---:|:---:|:---:|
 | `spot` | 13 | ✅ | partial (writes only) |
-| `futures` | 14 | ✅ | partial |
+| `futures` | 15 | ✅ | partial |
 | `account` | 8 | ✅ | yes |
 | `margin` | 7 | — | yes |
 | `copytrading` | 5 | — | yes |
@@ -127,7 +127,7 @@ If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenC
 | `earn` | 3 | — | yes |
 | `p2p` | 2 | — | yes |
 | `broker` | 3 | — | yes |
-| **Total** | **58** | **35** | |
+| **Total** | **59** | **36** | |
 
 The full tool catalog with every parameter lives at [agent-hub/docs/tools-reference.md](https://github.com/Bitget-AI/agent-hub/blob/main/docs/tools-reference.md).
 
@@ -138,7 +138,7 @@ The full tool catalog with every parameter lives at [agent-hub/docs/tools-refere
 | Host | Status | Notes |
 |---|:---:|---|
 | Claude Desktop | ✅ | First-class. |
-| Cursor | ✅ | Default 35-tool profile fits the 40-tool cap. |
+| Cursor | ✅ | Default 36-tool profile fits the 40-tool cap. |
 | Continue | ✅ | |
 | ChatGPT Desktop | ✅ | |
 | Windsurf | ✅ | |
@@ -152,7 +152,7 @@ The full tool catalog with every parameter lives at [agent-hub/docs/tools-refere
 Your AI host  ──MCP/stdio──►  bitget-agent-mcp
                                    │
                                    ▼
-                  @bitget-ai/bitget-agent-sdk  (56+ tools, REST client, signing)
+                  @bitget-ai/bitget-agent-sdk  (59 tools, REST client, signing)
                                    │
                                    ▼
                             Bitget REST API
