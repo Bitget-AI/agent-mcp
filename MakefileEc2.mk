@@ -20,7 +20,7 @@ build-bg-prod-data-prod-production-data-bitget-agent-mcp-external:
 	pnpm run test
 	npm pack --dry-run
 	mkdir -p $(DIST_DIR)
-	cp package.json README.md LICENSE CHANGELOG.md VERSION server.json $(DIST_DIR)/
+	cp package.json pnpm-lock.yaml README.md LICENSE CHANGELOG.md VERSION server.json $(DIST_DIR)/
 	cp -R lib $(DIST_DIR)/
 	rm -f .npmrc kms/.npmrc
 	cd kms && pnpm install --frozen-lockfile && pnpm run build
@@ -30,6 +30,7 @@ build-bg-prod-data-prod-production-data-bitget-agent-mcp-external:
 	test -f $(DIST_DIR)/server.json
 	test -d $(DIST_DIR)/lib
 	test -f $(DIST_DIR)/lib/index.js
+	test -f $(DIST_DIR)/lib/index.d.ts
 	test -d $(DIST_DIR)/kms
 	test -f $(DIST_DIR)/kms/dist/index.js
 
