@@ -5,13 +5,59 @@
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A520-026e00?style=flat-square)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-The **MCP surface** of the [Bitget Agent Hub](https://github.com/Bitget-AI/agent-hub) — exposes **59 Bitget API tools** over the [Model Context Protocol](https://modelcontextprotocol.io) so Claude Desktop, Cursor, Continue, ChatGPT Desktop, Windsurf, or any other MCP-capable AI host can drive your Bitget account.
+The **MCP surface** of the [Bitget Agent Hub](https://github.com/Bitget-AI/agent-hub) for the **Unified Trading Account (UTA / v3)** API. It exposes a small, **progressively-discoverable intent surface** over the [Model Context Protocol](https://modelcontextprotocol.io) so Claude Desktop, Cursor, Continue, ChatGPT Desktop, Windsurf, or any other MCP-capable AI host can drive your Bitget account — without flooding the model with one tool per endpoint.
 
 ```bash
 npx -y @bitget-ai/bitget-agent-mcp
 ```
 
 > **Prerequisites:** Node.js ≥ 20. A Bitget API key, secret, and passphrase ([create one](https://www.bitget.com/api-doc/common/intro)). An MCP-capable AI host (see table below).
+
+---
+
+## What makes this surface different
+
+Most exchange MCP servers advertise one tool per API endpoint — hundreds of tools that bloat the model's context and degrade tool-selection accuracy. This server instead exposes a **curated intent surface**:
+
+- **~16 intent verbs** (`market`, `order`, `position`, `account_overview`, …) that each fan out to many underlying v3 endpoints.
+- **`discover`** — a progressive introspection tool. The agent maps the surface on demand instead of reading every schema up front.
+- **`raw`** — an escape hatch that reaches any of the ~200 underlying v3 operations by `operationId` for the long tail.
+
+The default profile is **~14 tools**; the full set of intent verbs is **16** (plus `raw` and `discover`). All of the "smarts" — discovery, intent routing, write-safety gating, and response shaping — live in [`@bitget-ai/bitget-agent-sdk`](https://github.com/Bitget-AI/agent-sdk); this package is a thin stdio adapter on top of it.
+
+---
+
+## How an agent uses it
+
+The intended workflow is **discover → (drill down) → execute**:
+
+```
+discover({})                          → list business domains (account, trade, market, …) + meta tools
+discover({ domain: "trade" })         → that domain's verbs, one line each
+discover({ tool: "order" })           → one verb's full input schema (+ its actions)
+discover({ tool: "order", action: "place" })  → one action's exact required/optional contract
+order({ action: "place", ... })       → execute
+```
+
+If the prompt already implies the verb and arguments, the agent can skip discovery and call directly. `discover({ search: "funding" })` keyword-searches the whole surface when the domain is unknown.
+
+### Example call flows
+
+| Intent | Call |
+|---|---|
+| "What's the BTC spot price?" | `market({ action: "tickers", category: "SPOT", symbol: "BTCUSDT" })` |
+| "Show me my account" | `account_overview({})` |
+| "Place a limit buy" | `order({ action: "place", category: "SPOT", symbol: "BTCUSDT", side: "buy", orderType: "limit", price: "60000", qty: "0.001" })` |
+| "Cancel all my orders" (high-risk) | `order({ action: "cancelAll" })` → returns `{ confirmationRequired: true }` → re-call with `confirm: true` |
+| A long-tail endpoint not covered by a verb | `raw({ operationId: "getAccountBills", args: { … } })` |
+
+### Write safety
+
+- **Ordinary writes execute immediately.**
+- **High-risk / irreversible operations** (e.g. `cancelAll`, `withdraw`) return `{ confirmationRequired: true }` unless you pass `confirm: true`.
+- **Any write** accepts `dryRun: true` to preview the would-send request without sending it.
+
+MCP tool annotations are derived from the SDK's `riskLevel` (read / write / high), so hosts can flag destructive operations before the model invokes them.
 
 ---
 
@@ -49,13 +95,13 @@ Settings → MCP → add a new server:
 | Args | `-y @bitget-ai/bitget-agent-mcp` |
 | Env | `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` |
 
-> Cursor caps total MCP tools at 40. The default profile (36 tools) fits with 4 slots free for your other servers.
+> Cursor caps total MCP tools at 40. The intent surface (~14 tools by default, ≤18 with every module enabled) fits comfortably, leaving room for your other servers.
 
 ### Continue / Windsurf / ChatGPT Desktop / other MCP hosts
 
 Use the same `npx -y @bitget-ai/bitget-agent-mcp` invocation; pass credentials via env vars. Refer to your host's MCP configuration docs for the exact JSON layout.
 
-### Read-only or paper-trading
+### Read-only, paper-trading, or full surface
 
 Add CLI flags after the package name:
 
@@ -67,6 +113,10 @@ Add CLI flags after the package name:
 "args": ["-y", "@bitget-ai/bitget-agent-mcp", "--paper-trading", "--modules", "all"]
 ```
 
+```json
+"args": ["-y", "@bitget-ai/bitget-agent-mcp", "--surface", "full"]
+```
+
 ---
 
 ## CLI options
@@ -74,17 +124,21 @@ Add CLI flags after the package name:
 ```
 bitget-agent-mcp [options]
 
-  --modules <list>     spot,futures,account,margin,copytrading,
-                       convert,earn,p2p,broker
-                       Special: "all" loads everything.
-                       Default: spot,futures,account (36 tools).
+  --modules <list>     account, trade, market, strategy,
+                       broker, cryptoloans, instloan, tax
+                       Special: "all" loads all generally-available modules.
+                       broker and instloan are hidden — name them explicitly
+                       to expose them ("all" excludes them).
+                       Default: account,trade,market
 
-  --read-only          Strip every write tool at load time. The AI
-                       will not see place_order / transfer / withdraw
-                       / cancel_* etc. — they cannot be invoked.
+  --surface <mode>     intent  curated verbs + raw + discover (default)
+                       full    ALSO emit one tool per underlying v3 endpoint
 
-  --paper-trading      Route all calls to Bitget Demo Trading.
-                       Requires a Demo API Key.
+  --read-only          Expose only read/query operations; block all writes.
+
+  --paper-trading      Enable Demo Trading mode (requires a Demo API Key).
+                       Signed (private) requests carry the paptrading: 1 header.
+                       Mutually exclusive with --read-only.
 
   --help               Show help and exit
   --version            Show version and exit
@@ -97,6 +151,42 @@ Environment variables:
 | `BITGET_API_KEY` | Required for private endpoints |
 | `BITGET_SECRET_KEY` | Required for private endpoints |
 | `BITGET_PASSPHRASE` | Required for private endpoints |
+| `BITGET_API_BASE_URL` | Optional API base URL (default `https://api.bitget.com`) |
+| `BITGET_TIMEOUT_MS` | Optional request timeout in ms (default `15000`) |
+| `BITGET_MAX_RETRIES` | Optional max transport retries (default: SDK policy) |
+
+Without API credentials, only public/read operations succeed.
+
+---
+
+## Modules and intent verbs
+
+Verbs are gated by their primary module. The default profile loads `account,trade,market`.
+
+| Module | Default | Intent verbs |
+|---|:---:|---|
+| `market` | ✅ | `market` |
+| `trade` | ✅ | `order`, `position`, `strategy_order` |
+| `account` | ✅ | `account_overview`, `account_config`, `repayment`, `transfer_funds`, `deposit`, `withdraw`, `funds_records`, `subaccount` |
+| `cryptoloans` | — | `loan` |
+| `tax` | — | `tax` |
+| `broker` | hidden | `broker` |
+| `instloan` | hidden | `inst_loan` |
+
+Always present regardless of module: **`discover`** (introspection) and **`raw`** (reach any v3 operation by `operationId`). Every verb's `fronts` collectively cover all underlying v3 endpoints, so the intent surface loses no capability versus the 1:1 generated tier (`--surface full`).
+
+---
+
+## Tested AI hosts
+
+| Host | Status | Notes |
+|---|:---:|---|
+| Claude Desktop | ✅ | First-class. |
+| Cursor | ✅ | Intent surface fits the 40-tool cap with room to spare. |
+| Continue | ✅ | |
+| ChatGPT Desktop | ✅ | |
+| Windsurf | ✅ | |
+| Any MCP-compliant host | ✅ | If it speaks MCP over stdio, it works. |
 
 ---
 
@@ -108,55 +198,25 @@ If your AI assistant speaks **MCP**, this is the right surface for Bitget:
 - Credentials live in your host's MCP config, never on Bitget's infrastructure.
 - One process per AI session — clean shutdown, no orphaned daemons.
 
-If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenClaw), prefer [`@bitget-ai/bitget-agent-cli`](https://github.com/Bitget-AI/agent-cli) (`bgc`) — same 59 tools, shell-native.
-
----
-
-## Modules and tools
-
-| Module | Tools | Loaded by default | Requires API key |
-|---|:---:|:---:|:---:|
-| `spot` | 13 | ✅ | partial (writes only) |
-| `futures` | 15 | ✅ | partial |
-| `account` | 8 | ✅ | yes |
-| `margin` | 7 | — | yes |
-| `copytrading` | 5 | — | yes |
-| `convert` | 3 | — | yes |
-| `earn` | 3 | — | yes |
-| `p2p` | 2 | — | yes |
-| `broker` | 3 | — | yes |
-| **Total** | **59** | **36** | |
-
-The full tool catalog with every parameter lives at [agent-hub/docs/tools-reference.md](https://github.com/Bitget-AI/agent-hub/blob/main/docs/tools-reference.md).
-
----
-
-## Tested AI hosts
-
-| Host | Status | Notes |
-|---|:---:|---|
-| Claude Desktop | ✅ | First-class. |
-| Cursor | ✅ | Default 36-tool profile fits the 40-tool cap. |
-| Continue | ✅ | |
-| ChatGPT Desktop | ✅ | |
-| Windsurf | ✅ | |
-| Any MCP-compliant host | ✅ | If it speaks MCP over stdio, it works. |
+If your assistant lives **in your shell** instead (Claude Code, Codex CLI, OpenClaw), prefer [`@bitget-ai/bitget-agent-cli`](https://github.com/Bitget-AI/agent-cli) (`bgc`) — same intent surface, shell-native.
 
 ---
 
 ## How it's built
 
 ```
-Your AI host  ──MCP/stdio──►  bitget-agent-mcp
+Your AI host  ──MCP/stdio──►  bitget-agent-mcp  (thin protocol adapter)
                                    │
                                    ▼
-                  @bitget-ai/bitget-agent-sdk  (59 tools, REST client, signing)
+                  @bitget-ai/bitget-agent-sdk
+                  intent verbs · discover · raw · write-safety gate ·
+                  typed REST client · HMAC signing · retry/rate-limit
                                    │
                                    ▼
-                            Bitget REST API
+                       Bitget UTA (v3) REST API
 ```
 
-The MCP server is a thin protocol adapter on top of [`@bitget-ai/bitget-agent-sdk`](https://github.com/Bitget-AI/agent-sdk). All tool definitions, schemas, signing, and rate limiting come from the SDK; this package only handles MCP plumbing.
+The MCP server only handles MCP plumbing: stdio transport, CLI/env configuration, the wire-format mapping (`toMcpTool` + risk-derived annotations), a uniform error envelope (`safeInvoke`), and the workflow briefing carried in the MCP `initialize` instructions. Every tool definition, schema, signing detail, and safety rule comes from the SDK.
 
 ---
 
@@ -165,8 +225,8 @@ The MCP server is a thin protocol adapter on top of [`@bitget-ai/bitget-agent-sd
 - Credentials are read from environment variables only — passed through your MCP host's config, never logged, never written to disk by this server.
 - The server runs **locally over stdio** — no network listener, no remote endpoint to harden.
 - All authenticated requests are signed with **HMAC-SHA256** in-process.
-- Client-side rate limiting protects against AI loops hitting Bitget's API limits.
-- Write tools (`place_order`, `transfer`, `withdraw`, …) carry an explicit `[CAUTION]` annotation so AI hosts can flag them before execution.
+- Client-side retry/rate-limit policy protects against AI loops hitting Bitget's API limits.
+- Write verbs are annotated by `riskLevel`; destructive/irreversible operations require an explicit `confirm: true`, and any write supports `dryRun: true` for a no-network preview.
 - `--read-only` and `--paper-trading` provide layered safety nets — recommended for first-time setup.
 
 ---
