@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
-    "@bitget-ai/bitget-agent-sdk": "link:../agent-sdk"
+    "@bitget-ai/bitget-agent-sdk": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
