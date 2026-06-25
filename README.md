@@ -34,9 +34,9 @@
 
 `bitget-agent-mcp` is the **official Model Context Protocol (MCP) server** for Bitget, enabling desktop AI agents like **Claude Desktop**, **Cursor**, **Continue**, **Windsurf**, and **ChatGPT Desktop** to operate your Bitget account through natural-language commands.
 
-It is built on the [Bitget Unified Trading Account (UTA / v3) API](https://www.bitget.com/api-doc/common/intro) and covers **109 trading operations** across market data, spot, futures, account & funds management, sub-accounts, loans, and tax. Crucially, it does **not** flood your model with one tool per endpoint. Instead it exposes a small, **progressively-discoverable intent surface** of **16 intent verbs** (12 active in the default profile) plus two meta-tools — `discover` and `raw` — so AI hosts get full capability without the context bloat and tool-selection errors that plague endpoint-per-tool servers.
+It is built on the [Bitget Unified Trading Account (UTA / v3) API](https://www.bitget.com/api-doc/uta/intro) and covers **89 trading operations** across market data, spot, futures, account & funds management, sub-accounts, loans, and tax. Crucially, it does **not** flood your model with one tool per endpoint. Instead it exposes a small, **progressively-discoverable intent surface** of **14 curated intent verbs** (the default profile loads 12 verbs + `discover` + `raw` = 14 tools) so AI hosts get full capability without the context bloat and tool-selection errors that plague endpoint-per-tool servers.
 
-> **Part of [Bitget Agent Hub](https://github.com/Bitget-AI/agent-hub)** — the official open-source AI ecosystem for Bitget, including the CLI, SDK, installer, and market-analysis skills.
+> **Part of [Bitget Agent Hub](https://github.com/Bitget-AI/agent_hub)** — the official open-source AI ecosystem for Bitget, including the CLI, SDK, installer, and market-analysis skills.
 
 ---
 
@@ -95,8 +95,8 @@ Market data (the `market` verb) is **public** and works without API credentials;
 
 - **`--read-only`** — Blocks every write operation for the session. The verbs stay visible, but any order, transfer, cancellation, or withdrawal is rejected before it reaches Bitget. Ideal for safe exploration. (Mutually exclusive with `--paper-trading`.)
 - **`--paper-trading`** — Routes signed requests to Bitget's **Demo Trading** environment (adds the `paptrading: 1` header). Requires a separate [Demo API Key](https://www.bitget.com/en/api-management). Perfect for rehearsing strategies risk-free.
-- **`--modules <list>`** — Load only the modules you need. Default: `account,trade,market`. On-demand: `strategy`, `cryptoloans`, `tax`. Hidden: `broker`, `instloan` (must be named explicitly; `all` excludes them).
-- **`--surface <intent|full>`** — `intent` (default) exposes the curated verbs. `full` *additionally* emits one tool per underlying v3 endpoint (100+ tools) for power/debug use — this exceeds most hosts' tool caps.
+- **`--modules <list>`** — Load only the modules you need. Default: `account,trade,market`. On-demand: `strategy`, `cryptoloans`, `tax`.
+- **`--surface <intent|full>`** — `intent` (default) exposes the curated verbs. `full` additionally emits one tool per underlying v3 endpoint.
 
 ---
 
@@ -115,7 +115,7 @@ order({ action: "place", ... })                → execute
 If the prompt already implies the verb and arguments, the agent skips discovery and calls directly. `discover({ search: "funding" })` keyword-searches the whole surface when the domain is unknown. The two meta-tools are always present:
 
 - **`discover`** — progressive introspection of the surface.
-- **`raw`** — an escape hatch that reaches any of the 109 underlying v3 operations by `operationId` for the long tail. (In practice every operation is also covered by a verb, so `raw` is rarely needed.)
+- **`raw`** — an escape hatch that reaches any v3 operation by `operationId` for the long tail. (In practice every operation is also covered by a verb, so `raw` is rarely needed.)
 
 ### Write Safety
 
@@ -223,7 +223,7 @@ Restart Claude Desktop after saving.
 | **Args** | `-y @bitget-ai/bitget-agent-mcp` |
 | **Env** | `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` |
 
-> ⚠️ **Cursor tool limit:** Cursor caps total MCP tools at **40** across all servers. The default Bitget profile loads **14 tools** (12 intent verbs + `discover` + `raw`), leaving 26 slots for other servers. Even with every module enabled the intent surface is just **18 tools**. Only `--surface full` (one tool per endpoint, 100+ tools) would exceed the cap.
+> ⚠️ **Cursor tool limit:** Cursor caps total MCP tools at **40** across all servers. The default Bitget profile loads **14 tools** (12 intent verbs + `discover` + `raw`), leaving 26 slots for other servers. `--modules all` yields **16 tools**.
 
 ### Continue / Windsurf / ChatGPT Desktop / other MCP hosts
 
@@ -259,10 +259,8 @@ Use the same `npx -y @bitget-ai/bitget-agent-mcp` command and pass credentials v
 bitget-agent-mcp [options]
 
   --modules <list>     account, trade, market, strategy,
-                       broker, cryptoloans, instloan, tax
-                       "all" loads all generally-available modules.
-                       broker and instloan are hidden — name them explicitly
-                       to expose them ("all" excludes them).
+                       cryptoloans, tax
+                       "all" loads every module.
                        Default: account,trade,market
 
   --surface <mode>     intent  curated verbs + discover + raw (default)
@@ -288,7 +286,7 @@ Without API credentials, only public/read (market data) operations succeed.
 
 ### Modules & Intent Verbs
 
-The default profile loads `account,trade,market`. The full set spans **8 modules**, **16 intent verbs**, and **109 operations**:
+The default profile loads `account,trade,market`. The full set spans **6 modules** and **14 curated intent verbs**:
 
 | Module | Default | Intent verbs | Operations |
 |---|:---:|---|:---:|
@@ -298,10 +296,8 @@ The default profile loads `account,trade,market`. The full set spans **8 modules
 | `strategy` | on-demand | extends `strategy_order` (plan / TP-SL orders) | 5 |
 | `cryptoloans` | on-demand | `loan` | 11 |
 | `tax` | on-demand | `tax` | 1 |
-| `broker` | hidden | `broker` | 11 |
-| `instloan` | hidden | `inst_loan` | 9 |
 
-Always present regardless of module: **`discover`** (introspection) and **`raw`** (reach any v3 operation by `operationId`). Every verb's underlying operations collectively cover all 109 endpoints, so the intent surface loses no capability versus `--surface full`.
+Always present regardless of module: **`discover`** (introspection) and **`raw`** (reach any v3 operation by `operationId`).
 
 ---
 
@@ -347,7 +343,7 @@ The SDK applies a client-side retry/rate-limit policy that protects against AI l
 #### Cursor shows fewer Bitget tools than expected
 
 **Cause:** other MCP servers consuming Cursor's 40-tool cap. The Bitget default profile is **14 tools**.
-**Fix:** remove unused MCP servers, or use `--modules` to load only what you need. Avoid `--surface full` in Cursor.
+**Fix:** remove unused MCP servers, or use `--modules` to load only what you need.
 
 #### "Rate limit exceeded"
 
@@ -369,7 +365,7 @@ To force-refresh the npm cache:
 npx @bitget-ai/bitget-agent-mcp@latest --version
 ```
 
-To upgrade the whole Bitget AI toolkit at once, use the installer in [agent-hub](https://github.com/Bitget-AI/agent-hub).
+To upgrade the whole Bitget AI toolkit at once, use the installer in [agent_hub](https://github.com/Bitget-AI/agent_hub).
 
 ---
 
@@ -381,7 +377,7 @@ To upgrade the whole Bitget AI toolkit at once, use the installer in [agent-hub]
 | **[agent-skill](https://github.com/Bitget-AI/agent-skill)** | AI reasoning guide for the CLI | Teaching agents how to use `bgc` correctly |
 | **[agent-sdk](https://github.com/Bitget-AI/agent-sdk)** | TypeScript foundation SDK | Developers building custom integrations |
 | **[bitget-signal](https://github.com/Bitget-AI/bitget-signal)** | Market-analysis skills (no API key) | Macro, on-chain, sentiment, technical, news |
-| **[agent-hub](https://github.com/Bitget-AI/agent-hub)** | Central ecosystem entry + installer | Overview of all Bitget AI tools |
+| **[agent_hub](https://github.com/Bitget-AI/agent_hub)** | Central ecosystem entry + installer | Overview of all Bitget AI tools |
 
 ---
 
@@ -389,7 +385,7 @@ To upgrade the whole Bitget AI toolkit at once, use the installer in [agent-hub]
 
 ### What is bitget-agent-mcp?
 
-It's the **official MCP (Model Context Protocol) server** for Bitget. It exposes **109 Bitget UTA v3 operations** to desktop AI clients (Claude Desktop, Cursor, Windsurf, ChatGPT Desktop, …) through **16 curated intent verbs** plus a `discover` introspection tool and a `raw` escape hatch — over the MCP standard.
+It's the **official MCP (Model Context Protocol) server** for Bitget. It exposes **89 Bitget UTA v3 operations** to desktop AI clients (Claude Desktop, Cursor, Windsurf, ChatGPT Desktop, …) through **14 curated intent verbs** plus a `discover` introspection tool and a `raw` escape hatch — over the MCP standard.
 
 ### How is this different from agent-cli?
 
@@ -400,15 +396,15 @@ Both sit on the same SDK and expose the same intent surface — pick the one tha
 
 ### Why intent verbs instead of one tool per endpoint?
 
-Endpoint-per-tool servers advertise 100+ tools, which bloats the model's context and degrades tool-selection accuracy. The intent surface keeps the default tool list at **14 tools** while still covering all 109 operations — the agent uses `discover` to drill into detail only when it needs to.
+Endpoint-per-tool servers advertise one tool per endpoint, which bloats the model's context and degrades tool-selection accuracy. The intent surface keeps the default tool list at **14 tools** (12 verbs + `discover` + `raw`) while still covering all 89 default-exposed operations directly — and `raw` reaches any operation by `operationId` when you need the long tail. The agent uses `discover` to drill into detail only when it needs to.
 
 ### Which modules are loaded by default?
 
-Default: `account` (39 ops), `trade` (17 ops), `market` (16 ops) = **72 operations**, exposed through **12 intent verbs** plus `discover` and `raw` (**14 tools** total). Load more with `--modules strategy,cryptoloans,tax` or `--modules all`; the full set of **16 verbs** covers all **109 operations**.
+Default: `account` (39 ops), `trade` (17 ops), `market` (16 ops) = **72 operations**, exposed through **12 intent verbs** plus `discover` and `raw` (**14 tools** total). Load more with `--modules strategy,cryptoloans,tax` or `--modules all` (which reaches the 14 verbs across 89 endpoints).
 
 ### Does Cursor have a tool limit?
 
-Yes — Cursor caps total MCP tools at **40**. The default Bitget profile loads **14 tools**, well within the cap (26 slots free). Even with every module enabled the intent surface is **18 tools**. Only `--surface full` would exceed the limit.
+Yes — Cursor caps total MCP tools at **40**. The default Bitget profile loads **14 tools**, well within the cap (26 slots free). `--modules all` yields **16 tools**.
 
 ### How do I prevent accidental orders?
 
