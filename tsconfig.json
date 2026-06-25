@@ -16,8 +16,8 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": false,
-    "outDir": "dist"
+    "outDir": "./lib"
   },
   "include": ["src/**/*.ts", "tsup.config.ts"],
-  "exclude": ["dist", "node_modules", "tests"]
+  "exclude": ["dist", "lib", "node_modules", "tests"]
 }
