@@ -34,7 +34,7 @@
 
 `bitget-agent-mcp` is the **official Model Context Protocol (MCP) server** for Bitget, enabling desktop AI agents like **Claude Desktop**, **Cursor**, **Continue**, **Windsurf**, and **ChatGPT Desktop** to operate your Bitget account through natural-language commands.
 
-It is built on the [Bitget Unified Trading Account (UTA / v3) API](https://www.bitget.com/api-doc/common/intro) and covers **89 trading operations** across market data, spot, futures, account & funds management, sub-accounts, loans, and tax. Crucially, it does **not** flood your model with one tool per endpoint. Instead it exposes a small, **progressively-discoverable intent surface** of **14 curated intent verbs** (the default profile loads 12 verbs + `discover` + `raw` = 14 tools) so AI hosts get full capability without the context bloat and tool-selection errors that plague endpoint-per-tool servers.
+It is built on the [Bitget Unified Trading Account (UTA / v3) API](https://www.bitget.com/api-doc/uta/intro) and covers **89 trading operations** across market data, spot, futures, account & funds management, sub-accounts, loans, and tax. Crucially, it does **not** flood your model with one tool per endpoint. Instead it exposes a small, **progressively-discoverable intent surface** of **14 curated intent verbs** (the default profile loads 12 verbs + `discover` + `raw` = 14 tools) so AI hosts get full capability without the context bloat and tool-selection errors that plague endpoint-per-tool servers.
 
 > **Part of [Bitget Agent Hub](https://github.com/Bitget-AI/agent_hub)** — the official open-source AI ecosystem for Bitget, including the CLI, SDK, installer, and market-analysis skills.
 
