@@ -1,12 +1,19 @@
 node_modules/
 dist/
+spug-dist/
+lib/
 .DS_Store
 .idea/
 .vscode/
 .env
 .env.*
+.env-*
+e2e-reports/
 *.tgz
 *.log
-.changeset/*.md
-!.changeset/README.md
-!.changeset/config.json
+
+# npm publish — decrypted token files; must never be committed.
+.npmrc
+
+# User-local Claude settings
+.claude/

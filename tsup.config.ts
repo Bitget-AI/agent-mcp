@@ -5,6 +5,7 @@ export default defineConfig({
   format: ["esm"],
   platform: "node",
   target: "node18",
+  outDir: "lib",
   sourcemap: true,
   clean: true,
   dts: true,
