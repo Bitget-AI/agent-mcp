@@ -1,0 +1,13 @@
+{
+  "name": "bitget",
+  "displayName": "Bitget",
+  "version": "1.0.0",
+  "description": "Official Bitget plugin for Cursor. Connect Cursor Agent to the Bitget crypto exchange: live prices, account balances, positions, and trading. API keys stay on your machine.",
+  "author": { "name": "Bitget", "email": "luke.gao@bitget.com" },
+  "publisher": "Bitget",
+  "homepage": "https://www.bitget.com",
+  "repository": "https://github.com/Bitget-AI/agent-mcp",
+  "logo": "assets/logo.svg",
+  "keywords": ["bitget", "crypto", "trading", "exchange", "MCP"],
+  "mcpServers": "mcp.json"
+}
