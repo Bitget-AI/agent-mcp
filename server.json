@@ -1,25 +1,43 @@
 {
-  "$schema": "https://modelcontextprotocol.io/schemas/server.json",
-  "name": "bitget",
-  "displayName": "Bitget",
-  "description": "Official Bitget MCP server for the Unified Trading Account (UTA / v3) API. Exposes a small, progressively-discoverable intent surface (account, trade, market, strategy, …) with a discover tool and raw escape hatch — not one tool per endpoint.",
-  "version": "3.0.0",
-  "homepage": "https://github.com/Bitget-AI/agent-mcp",
-  "license": "MIT",
-  "transports": ["stdio"],
-  "command": {
-    "executable": "npx",
-    "args": ["-y", "@bitget-ai/bitget-agent-mcp"]
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.bitget-ai/bitget-agent-mcp",
+  "description": "Official Bitget MCP Server for the Unified Trading Account (UTA / v3) API — exposes a curated, progressively-discoverable intent surface (account, trade, market, strategy, …) to any MCP-compatible AI host (Claude Desktop, Cursor, Continue, …) over stdio.",
+  "repository": {
+    "url": "https://github.com/Bitget-AI/agent-mcp",
+    "source": "github"
   },
-  "env": {
-    "BITGET_API_KEY": {
-      "description": "Bitget API key (required for private endpoints)"
-    },
-    "BITGET_SECRET_KEY": {
-      "description": "Bitget API secret"
-    },
-    "BITGET_PASSPHRASE": {
-      "description": "Bitget API passphrase"
+  "version": "3.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@bitget-ai/bitget-agent-mcp",
+      "version": "3.0.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Bitget API key from API Management",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "BITGET_API_KEY"
+        },
+        {
+          "description": "Bitget API secret key",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "BITGET_SECRET_KEY"
+        },
+        {
+          "description": "Bitget API passphrase",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "BITGET_PASSPHRASE"
+        }
+      ]
     }
-  }
+  ]
 }
