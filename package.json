@@ -1,11 +1,11 @@
 {
   "name": "@bitget-ai/bitget-agent-mcp",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "packageManager": "pnpm@8.14.1",
   "description": "Official Bitget MCP Server for the Unified Trading Account (UTA / v3) API — exposes a curated, progressively-discoverable intent surface (account, trade, market, strategy, …) to any MCP-compatible AI host (Claude Desktop, Cursor, Continue, …) over stdio.",
   "type": "module",
   "license": "MIT",
-  "mcpName": "io.github.bitget-ai/bitget-agent-mcp",
+  "mcpName": "io.github.Bitget-AI/bitget-agent-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/Bitget-AI/agent-mcp.git"

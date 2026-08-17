@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.bitget-ai/bitget-agent-mcp",
+  "name": "io.github.Bitget-AI/bitget-agent-mcp",
   "description": "Official Bitget MCP Server for the Unified Trading Account (UTA v3) API.",
   "repository": {
     "url": "https://github.com/Bitget-AI/agent-mcp",
     "source": "github"
   },
-  "version": "3.0.1",
+  "version": "3.0.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@bitget-ai/bitget-agent-mcp",
-      "version": "3.0.1",
+      "version": "3.0.2",
       "transport": {
         "type": "stdio"
       },
