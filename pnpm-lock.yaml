@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@bitget-ai/bitget-agent-sdk':
-    specifier: ^1.2.0
-    version: 1.2.0
+    specifier: ^3.0.0
+    version: 3.0.0
   '@modelcontextprotocol/sdk':
     specifier: ^1.26.0
     version: 1.29.0(zod@4.4.3)
@@ -28,9 +28,9 @@ devDependencies:
 
 packages:
 
-  /@bitget-ai/bitget-agent-sdk@1.2.0:
-    resolution: {integrity: sha512-bRcptfnhZmz8pNUzqfw94LQIl3xkBc9J56XMfDwqWiabOVu23/0cd2x9B7TpqoKoO/FJYUOu5a8D6FoWUJuQCQ==}
-    engines: {node: '>=20.0.0'}
+  /@bitget-ai/bitget-agent-sdk@3.0.0:
+    resolution: {integrity: sha512-/VCwNjpCMO6n22tPCGlJX43Qr0xG8iOz1F/StrefOOMJfBIx+Db2SR1PcoF7DgADktfPF+47Vc8RrkDDGQ/7aQ==}
+    engines: {node: '>=20'}
     hasBin: true
     dev: false
 

@@ -1,10 +1,15 @@
 {
   "name": "@bitget-ai/bitget-agent-mcp",
-  "version": "1.2.0",
+  "version": "3.0.1",
   "packageManager": "pnpm@8.14.1",
-  "description": "Official Bitget MCP Server — exposes 56+ Bitget API tools (spot, futures, margin, copy-trading, earn, broker, p2p, convert, account) to any MCP-compatible AI host (Claude Desktop, Cursor, Continue, …) over stdio.",
+  "description": "Official Bitget MCP Server for the Unified Trading Account (UTA / v3) API — exposes a curated, progressively-discoverable intent surface (account, trade, market, strategy, …) to any MCP-compatible AI host (Claude Desktop, Cursor, Continue, …) over stdio.",
   "type": "module",
   "license": "MIT",
+  "mcpName": "io.github.bitget-ai/bitget-agent-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bitget-AI/agent-mcp.git"
+  },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "exports": {
@@ -30,6 +35,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "e2e": "node e2e/run.mjs",
+    "e2e:paper": "E2E_SUITE=paper node e2e/run.mjs",
+    "e2e:live": "E2E_SUITE=agent-sub node e2e/run.mjs",
+    "e2e:main": "E2E_SUITE=main node e2e/run.mjs",
     "prepublishOnly": "pnpm run typecheck && pnpm run build && pnpm run test"
   },
   "engines": {
@@ -46,6 +55,8 @@
     "crypto",
     "cryptocurrency",
     "exchange",
+    "uta",
+    "unified-trading-account",
     "spot",
     "futures",
     "margin",
@@ -62,7 +73,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
-    "@bitget-ai/bitget-agent-sdk": "^1.2.0"
+    "@bitget-ai/bitget-agent-sdk": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

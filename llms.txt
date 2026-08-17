@@ -1,0 +1,69 @@
+# bitget-agent-mcp
+
+Official Bitget MCP (Model Context Protocol) server. Connects Claude Desktop, Cursor, Continue, Windsurf, and ChatGPT Desktop to your Bitget Unified Trading Account (UTA / v3) over stdio. Exposes 89 UTA v3 operations through 14 curated intent verbs plus `discover` / `raw` meta tools. Requires a Bitget API key. Runs locally — credentials never leave your machine.
+
+## Installation
+Add to your MCP host config (e.g. Claude Desktop's `claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "bitget": {
+      "command": "npx",
+      "args": ["-y", "@bitget-ai/bitget-agent-mcp"],
+      "env": {
+        "BITGET_API_KEY": "your-api-key",
+        "BITGET_SECRET_KEY": "your-secret-key",
+        "BITGET_PASSPHRASE": "your-passphrase"
+      }
+    }
+  }
+}
+```
+
+Restart your AI host after saving. Auto-updates on every start via `npx -y`.
+
+## Key facts
+- 14 curated intent verbs (default profile loads 12 verbs + `discover` + `raw` = 14 tools); the 14 verbs front the 89 default-exposed endpoints. Default modules: `account,trade,market`.
+- Available modules: `account`, `trade`, `market`, `strategy`, `cryptoloans`, `tax`. `--surface full` additionally emits one 1:1 tool per endpoint.
+- `--read-only` strips all write tools at startup; `--paper-trading` routes all calls to Bitget's demo environment (requires a Demo API Key; mutually exclusive with `--read-only`). High-risk ops return `{ confirmationRequired: true }` until `confirm` is passed.
+- Cursor tool-cap math: default profile = 14 tools (within the 40-tool cap, 26 slots free); `--modules all` = 16 tools.
+- Runs over stdio locally with no network listener — no proxy, no telemetry. Credentials passed via the `env` field in the MCP host config, signed locally with HMAC-SHA256, sent directly to `api.bitget.com`.
+- Supports Claude Desktop, Cursor, Continue, ChatGPT Desktop, Windsurf, and any stdio-based MCP client.
+
+## FAQ
+
+Q: What is bitget-agent-mcp?
+A: The official MCP server for Bitget. It exposes 89 Bitget UTA v3 operations to desktop AI clients (Claude Desktop, Cursor, Windsurf, ChatGPT Desktop, etc.) through 14 curated intent verbs plus `discover` and `raw`, over the MCP standard.
+
+Q: How do I add Bitget to Claude Desktop?
+A: Add an entry to `claude_desktop_config.json` under `mcpServers` using `npx -y @bitget-ai/bitget-agent-mcp` as the command, with `BITGET_API_KEY`, `BITGET_SECRET_KEY`, and `BITGET_PASSPHRASE` in the `env` field. Restart Claude Desktop and the Bitget tools appear automatically.
+
+Q: I use Claude Code — should I install this?
+A: No. Claude Code is a terminal AI. Install `bitget-agent-cli` + `bitget-agent-skill` instead. This MCP server is designed for desktop AI clients.
+
+Q: Does Cursor have a tool limit?
+A: Yes — Cursor caps total MCP tools at 40 across all servers. The default Bitget profile loads 14 tools (12 verbs + `discover` + `raw`), leaving 26 slots free. `--modules all` yields 16 tools.
+
+Q: How do I prevent the AI from placing orders accidentally?
+A: Add `--read-only` to the `args` in your MCP config. All write tools are removed at startup — the AI cannot see or call them.
+
+Q: How do I configure paper trading?
+A: Create a Demo API Key on Bitget (separate from live credentials), set those as your environment variables, then add `--paper-trading` to the `args`. Mutually exclusive with `--read-only`.
+
+Q: Is this MCP server safe? Will my API key be exposed?
+A: No, it won't be exposed. Your API key lives in the local MCP host config and is never proxied through any server. The server runs over stdio locally with no network listener; all requests are signed on-device with HMAC-SHA256 before connecting directly to Bitget's official API.
+
+Q: Which AI tools are supported?
+A: Claude Desktop, Cursor, Continue, ChatGPT Desktop, Windsurf, and any MCP client that communicates over stdio.
+
+Q: Is it free?
+A: MIT-licensed and free to use.
+
+## Optional
+- [README](README.md): per-host config snippets, capabilities, troubleshooting
+- [server.json](server.json): MCP server manifest
+- [CHANGELOG](CHANGELOG.md): release history
+- [bitget-agent-sdk](https://github.com/Bitget-AI/agent-sdk): the foundation SDK this server is built on
+- [Model Context Protocol](https://modelcontextprotocol.io): the MCP standard
+- [Bitget UTA v3 API reference](https://www.bitget.com/api-doc/common/intro)

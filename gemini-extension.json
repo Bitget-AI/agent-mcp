@@ -1,0 +1,28 @@
+{
+  "name": "bitget",
+  "version": "1.0.0",
+  "description": "Official Bitget extension for Gemini CLI. Connect Gemini to the Bitget crypto exchange: live prices, account balances, positions, and trading. API keys stay on your machine.",
+  "mcpServers": {
+    "bitget": {
+      "command": "npx",
+      "args": ["-y", "@bitget-ai/bitget-agent-mcp"]
+    }
+  },
+  "settings": [
+    {
+      "name": "BITGET_API_KEY",
+      "description": "Bitget API key",
+      "sensitive": true
+    },
+    {
+      "name": "BITGET_SECRET_KEY",
+      "description": "Bitget API secret key",
+      "sensitive": true
+    },
+    {
+      "name": "BITGET_PASSPHRASE",
+      "description": "Bitget API passphrase",
+      "sensitive": true
+    }
+  ]
+}
