@@ -30,6 +30,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
     "prepublishOnly": "pnpm run typecheck && pnpm run build && pnpm run test"
   },
   "engines": {
@@ -68,6 +69,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^2.0.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^2.0.0"
