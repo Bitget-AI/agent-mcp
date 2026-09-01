@@ -11,6 +11,7 @@ lib/
 e2e-reports/
 *.tgz
 *.log
+coverage/
 
 # npm publish — decrypted token files; must never be committed.
 .npmrc

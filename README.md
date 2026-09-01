@@ -9,6 +9,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Bitget-AI/agent-mcp/actions/workflows/ci.yml"><img src="https://github.com/Bitget-AI/agent-mcp/actions/workflows/ci.yml/badge.svg" alt="Bitget Agent MCP continuous integration build status" /></a>
   <a href="https://www.npmjs.com/package/@bitget-ai/bitget-agent-mcp"><img src="https://img.shields.io/npm/v/%40bitget-ai%2Fbitget-agent-mcp.svg?style=flat-square&color=cb3837&label=npm" alt="Bitget Agent MCP npm package version - latest release on npm registry" /></a>
   <a href="https://www.npmjs.com/package/@bitget-ai/bitget-agent-mcp"><img src="https://img.shields.io/npm/dm/%40bitget-ai%2Fbitget-agent-mcp.svg?style=flat-square&color=026e00&label=downloads" alt="Bitget Agent MCP monthly downloads count from npm" /></a>
   <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-compatible-8A2BE2?style=flat-square" alt="Model Context Protocol MCP compatible AI integration standard" /></a>
